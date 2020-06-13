@@ -1,0 +1,66 @@
+project:
+  name: easyblog
+  version: 1.0
+  engineering-code: Seed plan
+#tomcat config
+server :
+  tomcat :
+    max-threads : 128
+    min-spare-threads : 5
+    uri-encoding : UTF-8
+    #shiro 报错修改的地方
+    max-connections: 200000
+    max-http-post-size: 9000000
+spring :
+  # 环境 dev|prod
+  profiles :
+    active : dev
+    #引入其他配置文件，例如ftpHX 未配置文件application-ftpHX.yml
+    #include: ftpHX,ftpCloud
+  servlet:
+    multipart:
+      #设置总上传的数据大小
+      max-request-size: 100MB
+      #单个文件大小
+      maxFileSize : 30MB
+        #shiro 报错修改的地方
+    max-connections: 200000
+    max-http-post-size: 9000000
+  mvc:   #静态文件
+    static-path-pattern : /static/**
+  #模板引擎
+  thymeleaf:
+    model: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    #指定编码
+    encoding: utf-8
+    #禁用缓存 默认false
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+#mybatis:
+mybatis:
+  config-location: classpath:/mybatis/mybatis-config.xml
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+#pagehelper分页插件
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+#七牛云配置
+oss:
+  qiniu:
+    #对应存储空间的访问域名
+    domain: q0stnsal9.aaa.bbb.com
+    #accessKey密钥
+    accessKey: 5o-rVbYF111C
+    #secretKey秘钥
+    secretKey: C9TETPDFHDj38d
+    #bucket是创建的存储空间名
+    bucket: test-img
+# log configuration
+logging:
+  config: classpath:logback-spring.xml

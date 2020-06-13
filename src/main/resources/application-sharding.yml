@@ -1,0 +1,61 @@
+#配置多个数据源
+spring:
+  shardingsphere:
+    datasource:
+      #定义两个数据源：ds0和ds1，数据源名字可以随便起
+      names: ds0,ds1
+      ds0:
+        #一个类似于DruidDataSource的数据库连接池
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.92.147:3307/ds0?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+        username: root
+        password: 123456
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.92.147:3307/ds1?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+        username: root
+        password: 123456
+    sharding:
+      tables:
+        # 配置分库分表的表 ，其中key 就是表名 value 就写一些配置
+        t_order:
+          actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
+          ## 指定分库规则
+          database-strategy:
+            inline:
+              sharding-column: user_id
+              algorithm-expression: ds$->{user_id % 2}
+          ## 指定分表规则
+          table-strategy:
+            inline:
+              sharding-column: order_id
+              algorithm-expression: t_order$->{order_id % 2}
+
+        t_order_item:
+          actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
+          ## 通过JAVA类方式自定义分库规则
+          database-strategy:
+            hint:
+              algorithmClassName: top.easyblog.sharding.demo.hint.HintSharding
+          ## 指定分表规则
+          table-strategy:
+            inline:
+              sharding-column: order_id
+              algorithm-expression: t_order_item$->{order_id % 2}
+          ## 生成分布式主键
+          key-generator:
+            column: item_id
+            type: SNOWFLAKE     #雪花算法
+
+      ## 绑定主表与子表，避免关联查询导致的全数据源路由
+      binding-tables: t_order,t_order_item
+
+      ## 配置广播表：以广播的形式保存（如果只涉及查询的话可以不配置，会随机取一个数据源）
+      broadcast-tables: t_config
+
+    ## 打印sql
+    props:
+      sql:
+        show: true

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.easyblog.mapper.UserMapper">
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="top.easyblog.entity.User">
+    select * from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultType="top.easyblog.entity.User">
+    select * from user
+  </select>
+
+
+  <insert id="insertBatch" parameterType="arraylist">
+    insert into user (name, age, gender) values
+    <foreach collection="users" item="user"  separator=",">
+      (#{user.name},#{user.age},#{user.gender})
+    </foreach>
+  </insert>
+
+  <insert id="insertSelective" parameterType="top.easyblog.entity.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="grnder != null">
+        gender,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="grnder != null">
+        #{grnder,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+
+
+</mapper>
