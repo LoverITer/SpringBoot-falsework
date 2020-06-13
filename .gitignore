@@ -1,17 +1,30 @@
-*.class
-**/target
-**/webapp/userfiles
-**/WEB-INF/classes
-**/logs/log*.log
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
 
+### STS ###
+.apt_generated
 .classpath
+.factorypath
 .project
+.settings
+.springBeans
+.sts4-cache
 
+### IntelliJ IDEA ###
 .idea
-*.ipr
-*.iml
 *.iws
-*.lic
-rebel.xml
-/.factorypath
-/.springBeans
+*.iml
+*.ipr
+*.log
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
